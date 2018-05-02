@@ -1,0 +1,26 @@
+extends layout
+
+block content
+  h1 提交文章
+  form(action="/post" method="post")
+    table
+      tr
+        td 标题：
+        td
+          input(type="input" name="title" size="50")
+      tr
+        td 分类：
+        td
+          select(name="category_id")
+            - for (let i = 0; i < categories.length; i++) {
+            option(value="#{categories[i].id}") #{categories[i].name}
+            - }
+      tr
+        td 内容：
+        td
+          textarea(name="content", cols="50", rows="10")
+      tr
+        td
+        td
+          input(type="submit")
+

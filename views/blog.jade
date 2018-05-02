@@ -1,0 +1,69 @@
+extends layout
+
+block content
+  div(id="banner")
+    h1(class="website_title") #{website_title}
+    h3(class="website_description") #{website_description}
+
+  div(id="navigation")
+    span
+      a(href="#" class="current") 首页
+    span
+      a(href="#") 分类1
+    span
+      a(href="#") 分类2
+    span
+      a(href="#") 分类3
+
+  div(class="main_body")
+    div(class="articles_box")
+      - for (let i = 0; i < articles.length; i++) {
+      div(class="article")
+        h3(class="title") #{articles[i].title}
+        div(class="date") #{articles[i].date}
+        div(class="content") #{articles[i].content}
+      - }
+      
+      div(class="pagination")
+        span
+          a(href="#") 1
+        span
+          a(href="#") 2
+        span
+          a(href="#") 3
+        span
+          a(href="#") 4
+        span
+          a(href="#") 5
+        span
+          a(href="#") 6
+        span
+          a(href="#") 7
+        span
+          a(href="#") 8
+
+    div(class="tags_box")
+      ul
+        li
+          a(href="#") 标签1(5)
+        li
+          a(href="#") 标签2(5)
+        li
+          a(href="#") 标签3(5)
+        li
+          a(href="#") 标签4(5)
+        li
+          a(href="#") 标签5(5)
+        li
+          a(href="#") 标签6(5)
+        li
+          a(href="#") 标签7(5)
+        li
+          a(href="#") 标签8(5)
+
+    div(class="clear")
+
+    div(class="footer")
+      p(class="copyright") #{copyright}&copy;copyright
+      p(class="company") #{company}
+      p(class="email") Email: #{email}
