@@ -9,6 +9,15 @@ const Category = require('../models').Category;
 //博客主页的显示
 const display = function(req, res, next) {
     Website.findOne().then(function(webinfo){
+        //分页信息
+        let page = 1;
+        let limit = 4;
+
+        if (req.query.page) {
+            page = req.query.page;
+        }
+
+
         console.log(webinfo);
         webinfo.website_title = webinfo.title;
         webinfo.website_description = webinfo.description;
@@ -22,17 +31,33 @@ const display = function(req, res, next) {
             'company': webinfo.company,
         };
 
-        Article.findAll().then(function(articles){
-            locals['articles'] = articles;
-            for (let i = 0; i < articles.length; i++) {
-                console.log(articles[i]['createdAt']);
-                console.log(moment());
-                console.log(moment(articles[i]['createdAt']).format("YYYY-MM-DD hh:mm:ss"));
-                articles[i]['date'] = moment(articles[i]['createdAt']).format("YYYY-MM-DD hh:mm:ss");
-                console.log(articles[i]['createdAt']);
+        Article.findAndCount({
+            order: [['id', 'DESC']],
+            limit: limit,
+            offset: (page-1)*limit
+        }).then(function(articles){
+
+            let pagination = []
+
+            for (let i = 1; i <= Math.ceil(articles.count/limit); i++) {
+                pagination.push({
+                    tag:i+'',
+                    link:'/?page=' + i
+                })
             }
 
-            console.log(articles);
+
+            
+            for (let i = 0; i < articles.rows.length; i++) {
+                articles.rows[i]['date'] = moment(articles.rows[i]['createdAt']).format("YYYY-MM-DD hh:mm:ss");
+                console.log(articles.rows[i]['createdAt']);
+            }
+
+            locals['articles'] = articles.rows;
+            locals['total'] = articles.count;
+            locals['pagination'] = pagination;
+
+            //console.log(articles);
 
             return res.render('blog', locals)
         });

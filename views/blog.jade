@@ -25,22 +25,12 @@ block content
       - }
       
       div(class="pagination")
+        - for (let i = 0; i < pagination.length; i++) {
         span
-          a(href="#") 1
-        span
-          a(href="#") 2
-        span
-          a(href="#") 3
-        span
-          a(href="#") 4
-        span
-          a(href="#") 5
-        span
-          a(href="#") 6
-        span
-          a(href="#") 7
-        span
-          a(href="#") 8
+          a(href="#{pagination[i].link}") #{pagination[i].tag}
+        - }
+        
+
 
     div(class="tags_box")
       ul
