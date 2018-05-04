@@ -7,13 +7,11 @@ block content
 
   div(id="navigation")
     span
-      a(href="#" class="current") 首页
+      a(href='/' class="#{categoryId == 0 ? 'current': ''}") 首页
+    - for (let i = 0; i < categories.length; i++) {
     span
-      a(href="#") 分类1
-    span
-      a(href="#") 分类2
-    span
-      a(href="#") 分类3
+      a(href="/?cate_id=#{categories[i].id}" class="#{categories[i].id == categoryId ? 'current' : ''}") #{categories[i].name}
+    - }
 
   div(class="main_body")
     div(class="articles_box")

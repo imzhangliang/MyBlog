@@ -8,16 +8,28 @@ const Category = require('../models').Category;
 
 //博客主页的显示
 const display = function(req, res, next) {
-    Website.findOne().then(function(webinfo){
-        //分页信息
-        let page = 1;
-        let limit = 4;
+    /*
+    * get参数： 
+    *  1. cate_id: 分类id
+    *  2. page: 页码
+    */
+    //分页信息
+    let page = 1;
+    let limit = 4;
+    let categoryId = 0;
 
-        if (req.query.page) {
-            page = req.query.page;
-        }
+    if (req.query.page) {
+        page = req.query.page;
+    }
+
+    if (req.query.cate_id) {
+        categoryId = req.query.cate_id;
+    }
 
 
+
+
+    Website.findOne().then(function(webinfo){   //网站相关信息查询
         console.log(webinfo);
         webinfo.website_title = webinfo.title;
         webinfo.website_description = webinfo.description;
@@ -31,36 +43,52 @@ const display = function(req, res, next) {
             'company': webinfo.company,
         };
 
-        Article.findAndCount({
+        let options = {
             order: [['id', 'DESC']],
             limit: limit,
-            offset: (page-1)*limit
-        }).then(function(articles){
+            offset: (page-1)*limit,
+            where:{}
+        };
 
-            let pagination = []
+        if (categoryId > 0) {
+            options.where.CategoryId = categoryId;
+        }
 
-            for (let i = 1; i <= Math.ceil(articles.count/limit); i++) {
-                pagination.push({
-                    tag:i+'',
-                    link:'/?page=' + i
-                })
-            }
+        locals['categoryId'] = categoryId;
 
 
-            
-            for (let i = 0; i < articles.rows.length; i++) {
-                articles.rows[i]['date'] = moment(articles.rows[i]['createdAt']).format("YYYY-MM-DD hh:mm:ss");
-                console.log(articles.rows[i]['createdAt']);
-            }
+        Category.findAll().then(function(categories){
+            locals['categories'] = categories;
 
-            locals['articles'] = articles.rows;
-            locals['total'] = articles.count;
-            locals['pagination'] = pagination;
+            Article.findAndCount(options).then(function(articles){  // 按照条件查询文章
 
-            //console.log(articles);
+                let pagination = []
 
-            return res.render('blog', locals)
+                for (let i = 1; i <= Math.ceil(articles.count/limit); i++) {
+                    pagination.push({
+                        tag:i+'',
+                        link:'/?' + (categoryId > 0 ? 'cate_id=' + categoryId + '&' : '') +'page=' + i
+                    })
+                }
+
+
+                
+                for (let i = 0; i < articles.rows.length; i++) {
+                    articles.rows[i]['date'] = moment(articles.rows[i]['createdAt']).format("YYYY-MM-DD hh:mm:ss");
+                    console.log(articles.rows[i]['createdAt']);
+                }
+
+                locals['articles'] = articles.rows;
+                locals['total'] = articles.count;
+                locals['pagination'] = pagination;
+
+                //console.log(articles);
+
+                return res.render('blog', locals)
+            });
         });
+
+ 
         
         //return res.render('blog', locals);
     })    
