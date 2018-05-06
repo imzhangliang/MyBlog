@@ -20,6 +20,11 @@ const display = function(req, res, next) {
     let page = 1;
     let limit = 4;
     let categoryId = 0;
+    let tagId = 0;
+    let pagination = {
+        page: page,
+        limit: limit
+    };
 
     if (req.query.page) {
         page = req.query.page;
@@ -29,75 +34,15 @@ const display = function(req, res, next) {
         categoryId = req.query.cate_id;
     }
 
+    if (req.query.tag_id) {
+        tagId = req.query.tag_id;
+    }
 
 
-
-    Website.findOne().then(function(webinfo){   //网站相关信息查询
-        console.log(webinfo);
-        webinfo.website_title = webinfo.title;
-        webinfo.website_description = webinfo.description;
-        console.log(webinfo.copyright)
-
-        let locals = {
-            'website_title': webinfo.title,
-            'website_description': webinfo.description,
-            'copyright': webinfo.copyright,
-            'email': webinfo.email,
-            'company': webinfo.company,
-        };
-
-        let options = {
-            order: [['id', 'DESC']],
-            limit: limit,
-            offset: (page-1)*limit,
-            where:{},
-            include: {
-                model: Tag
-            }
-        };
-
-        if (categoryId > 0) {
-            options.where.CategoryId = categoryId;
-        }
-
-        locals['categoryId'] = categoryId;
-
-
-        Category.findAll().then(function(categories){
-            locals['categories'] = categories;
-
-            Article.findAndCount(options).then(function(articles){  // 按照条件查询文章
-
-                let pagination = []
-
-                console.log('Articles Count: ' + articles.count);
-                for (let i = 1; i <= Math.ceil(articles.count/limit); i++) {
-                    pagination.push({
-                        tag:i+'',
-                        link:'/?' + (categoryId > 0 ? 'cate_id=' + categoryId + '&' : '') +'page=' + i
-                    })
-                }
-
-
-                
-                for (let i = 0; i < articles.rows.length; i++) {
-                    articles.rows[i]['date'] = moment(articles.rows[i]['createdAt']).format("YYYY-MM-DD hh:mm:ss");
-                }
-
-                locals['articles'] = articles.rows;
-                locals['total'] = articles.count;
-                locals['pagination'] = pagination;
-
-                //console.log(articles);
-
-                return res.render('blog', locals)
-            });
-        });
-
- 
-        
-        //return res.render('blog', locals);
-    })    
+    Article.queryByCategory(categoryId, pagination).then(function(locals){
+        console.log(locals);
+        return res.render('blog', locals);
+    })
 
     
 }
