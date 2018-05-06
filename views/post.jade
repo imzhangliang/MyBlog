@@ -12,9 +12,20 @@ block content
         td 分类：
         td
           select(name="category_id")
+            option(value="0") 未分类
             - for (let i = 0; i < categories.length; i++) {
             option(value="#{categories[i].id}") #{categories[i].name}
             - }
+      tr
+        td 标签:
+        td
+          select(class="tag_selector" name="tag_id[0]" selected="selected")
+            option(value="0") 未选择
+            - for (let i = 0; i < tags.length; i++) {
+            option(value="#{tags[i].id}") #{tags[i].name}
+            - }
+          span
+            input(name="new_tag" value="新标签")
       tr
         td 内容：
         td
@@ -23,4 +34,5 @@ block content
         td
         td
           input(type="submit")
+  script(src="/javascripts/post.js")
 

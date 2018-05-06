@@ -15,11 +15,17 @@ block content
 
   div(class="main_body")
     div(class="articles_box")
+      - console.log(articles)
       - for (let i = 0; i < articles.length; i++) {
       div(class="article")
         h3(class="title") #{articles[i].title}
         div(class="date") #{articles[i].date}
         div(class="content") #{articles[i].content}
+        div(class="tags")
+          b 标签：
+          - for (let j = 0; j < articles[i].Tags.length; j++) {
+          span #{articles[i].Tags[j].name}
+          - }
       - }
       
       div(class="pagination")

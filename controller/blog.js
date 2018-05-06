@@ -5,6 +5,9 @@ let moment = require('moment');
 const Article = require('../models').Article;
 const Website = require('../models').Website;
 const Category = require('../models').Category;
+const Tag = require('../models').Tag;
+
+const _ = require('lodash');
 
 //博客主页的显示
 const display = function(req, res, next) {
@@ -47,7 +50,10 @@ const display = function(req, res, next) {
             order: [['id', 'DESC']],
             limit: limit,
             offset: (page-1)*limit,
-            where:{}
+            where:{},
+            include: {
+                model: Tag
+            }
         };
 
         if (categoryId > 0) {
@@ -64,6 +70,7 @@ const display = function(req, res, next) {
 
                 let pagination = []
 
+                console.log('Articles Count: ' + articles.count);
                 for (let i = 1; i <= Math.ceil(articles.count/limit); i++) {
                     pagination.push({
                         tag:i+'',
@@ -75,7 +82,6 @@ const display = function(req, res, next) {
                 
                 for (let i = 0; i < articles.rows.length; i++) {
                     articles.rows[i]['date'] = moment(articles.rows[i]['createdAt']).format("YYYY-MM-DD hh:mm:ss");
-                    console.log(articles.rows[i]['createdAt']);
                 }
 
                 locals['articles'] = articles.rows;
@@ -101,7 +107,13 @@ const postDisplay = function(req, res, next) {
     let categories = Category.findAll({}).then(function(categories){
         console.log(categories);
 
-        res.render('post', {'categories': categories})
+        Tag.findAll().then(function(tags){
+            res.render('post', {
+                'categories': categories,
+                'tags':tags
+            })
+        })
+        
     });
 }
 
@@ -109,8 +121,21 @@ const post = function(req, res, next) {
     let title = req.body.title;
     let content = req.body.content;
     let categoryId = req.body.category_id;
+    let tagId0 = req.body['tag_id[0]'];
+    let tagId1 = req.body['tag_id[1]'];
+    let tagId2 = req.body['tag_id[2]'];
+    let tagIds = [tagId0, tagId1, tagId2];
+    console.log(tagIds);
+    tagIds = Array.from(new Set(tagIds));
 
-    Article.postArticle(title, content, categoryId).then(function(result){
+    console.log(tagIds);
+    _.remove(tagIds, function(e){
+        return e === undefined || e == '0';
+    });
+
+    console.log(tagIds);
+
+    Article.postArticle(title, content, categoryId, tagIds).then(function(result){
         return res.jsonp(result);
     })
 }
