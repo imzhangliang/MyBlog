@@ -24,7 +24,8 @@ block content
         div(class="tags")
           b 标签：
           - for (let j = 0; j < articles[i].Tags.length; j++) {
-          span #{articles[i].Tags[j].name}
+          span
+            a(href="/?tag_id=#{articles[i].Tags[j].id}") #{articles[i].Tags[j].name}
           - }
       - }
       
@@ -46,22 +47,16 @@ block content
 
     div(class="tags_box")
       ul
+        - for (let i = 0; i < tags.length; i++) {
+        -   if (tagId == tags[i].id) {
         li
-          a(href="#") 标签1(5)
+          b #{tags[i].name} (#{tags[i].count})
+        -   } else {
         li
-          a(href="#") 标签2(5)
-        li
-          a(href="#") 标签3(5)
-        li
-          a(href="#") 标签4(5)
-        li
-          a(href="#") 标签5(5)
-        li
-          a(href="#") 标签6(5)
-        li
-          a(href="#") 标签7(5)
-        li
-          a(href="#") 标签8(5)
+          a(href="/?tag_id=#{tags[i].id}") #{tags[i].name} (#{tags[i].count})
+        -   }
+        - }
+
 
     div(class="clear")
 

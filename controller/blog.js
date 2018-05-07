@@ -35,11 +35,23 @@ const display = function(req, res, next) {
         tagId = req.query.tag_id;
     }
 
+    if (categoryId > 0) {   //按分类来找文章
+        Article.queryByCategory(categoryId, pagination).then(function(locals){
+            console.log(locals);
+            return res.render('blog', locals);
+        })
+    } else if (tagId > 0){ //按标签来找文章
+        Article.queryByTag(tagId, pagination).then(function(locals){
+            console.log(locals);
+            return res.render('blog', locals);
+        })
+    } else {    //所有文章
+        Article.queryByCategory(0, pagination).then(function(locals){
+            console.log(locals);
+            return res.render('blog', locals);
+        })
+    }
 
-    Article.queryByCategory(categoryId, pagination).then(function(locals){
-        console.log(locals);
-        return res.render('blog', locals);
-    })
 
     
 }
