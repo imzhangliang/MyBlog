@@ -77,12 +77,13 @@ module.exports = (sequelize, DataTypes) => {
 
           return Article.findAndCount(options).then(function(articles){  // 按照条件查询文章
 
-              let pagination = []
+              let pagination = [] //传给view的分页变量，和上面的pagination是两个变量
 
               console.log('Articles Count: ' + articles.count);
               for (let i = 1; i <= Math.ceil(articles.count/limit); i++) {
                   pagination.push({
                       tag:i+'',
+                      page: i,
                       link:'/?' + (categoryId > 0 ? 'cate_id=' + categoryId + '&' : '') +'page=' + i
                   })
               }
@@ -96,6 +97,7 @@ module.exports = (sequelize, DataTypes) => {
               locals['articles'] = articles.rows;
               locals['total'] = articles.count;
               locals['pagination'] = pagination;
+              locals['page'] = page;
 
               return locals;
               //return res.render('blog', locals)

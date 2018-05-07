@@ -30,8 +30,16 @@ block content
       
       div(class="pagination")
         - for (let i = 0; i < pagination.length; i++) {
+        -   if (page == pagination[i].page) {
+        span
+          b(class="current") #{pagination[i].tag}
+
+        -   } else {
+
         span
           a(href="#{pagination[i].link}") #{pagination[i].tag}
+
+        -   }
         - }
         
 

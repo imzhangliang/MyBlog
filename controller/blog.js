@@ -17,7 +17,7 @@ const display = function(req, res, next) {
     *  2. page: 页码
     */
     //分页信息
-    let page = 1;
+    let page = req.query.page ? req.query.page : 1;
     let limit = 4;
     let categoryId = 0;
     let tagId = 0;
@@ -26,9 +26,6 @@ const display = function(req, res, next) {
         limit: limit
     };
 
-    if (req.query.page) {
-        page = req.query.page;
-    }
 
     if (req.query.cate_id) {
         categoryId = req.query.cate_id;

@@ -21,6 +21,7 @@ a {
 
 div.articles_box {float: left; width: 80%;}
 
+.tags span {margin: 0 5px;}
 
 div.pagination a{margin: 0 5px;}
 
