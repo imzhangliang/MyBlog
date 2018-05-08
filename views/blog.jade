@@ -18,7 +18,8 @@ block content
       - console.log(articles)
       - for (let i = 0; i < articles.length; i++) {
       div(class="article")
-        h3(class="title") #{articles[i].title}
+        h3(class="title")
+          a(href="/article?article_id=#{articles[i].id}") #{articles[i].title}
         div(class="date") #{articles[i].date}
         div(class="content") #{articles[i].content}
         div(class="tags")

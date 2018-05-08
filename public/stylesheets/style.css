@@ -21,6 +21,9 @@ a {
 
 div.articles_box {float: left; width: 80%;}
 
+h3.title a {color: #000; text-decoration: none;}
+h3.title a:hover {text-decoration: underline;}
+
 .tags span {margin: 0 5px;}
 
 div.pagination a{margin: 0 5px;}
