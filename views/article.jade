@@ -1,0 +1,55 @@
+extends layout
+
+block content
+  div(id="banner")
+    h1(class="website_title") #{website_title}
+    h3(class="website_description") #{website_description}
+
+  div(id="navigation")
+    span
+      a(href='/' class="#{categoryId == 0 ? 'current': ''}") 首页
+    - for (let i = 0; i < categories.length; i++) {
+    span
+      a(href="/?cate_id=#{categories[i].id}" class="#{categories[i].id == categoryId ? 'current' : ''}") #{categories[i].name}
+    - }
+
+  div(class="main_body")
+    div(class="articles_box")
+      div(class="article")
+        - if (article) {
+        h3(class="title") #{article.title}
+        div(class="date") #{article.date}
+        div(class="content") #{article.content}
+        div(class="tags")
+          b 标签：
+          - for (let j = 0; j < article.Tags.length; j++) {
+          span
+            a(href="/?tag_id=#{article.Tags[j].id}") #{article.Tags[j].name}
+          - }
+        - } else {
+        h3(class="title") 未找到相关文章！
+        - }
+
+
+        
+
+
+    div(class="tags_box")
+      ul
+        - for (let i = 0; i < tags.length; i++) {
+        -   if (tagId == tags[i].id) {
+        li
+          b #{tags[i].name} (#{tags[i].count})
+        -   } else {
+        li
+          a(href="/?tag_id=#{tags[i].id}") #{tags[i].name} (#{tags[i].count})
+        -   }
+        - }
+
+
+    div(class="clear")
+
+    div(class="footer")
+      p(class="copyright") #{copyright}&copy;copyright
+      p(class="company") #{company}
+      p(class="email") Email: #{email}

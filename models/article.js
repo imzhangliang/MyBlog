@@ -112,7 +112,6 @@ module.exports = (sequelize, DataTypes) => {
     })    
   }
 
-
   //按照标签的方式来查找文章
   Article.queryByTag = function(tagId, pagination) {
     const Website = require('../models').Website;
@@ -206,6 +205,54 @@ module.exports = (sequelize, DataTypes) => {
 
             });
 
+          });
+
+
+      });
+    })    
+  }
+
+
+  //按照分类的方式来查找文章
+  Article.queryArticle = function(articleId) {
+    const Website = require('../models').Website;
+    const Category = require('../models').Category;
+    const Tag = require('../models').Tag;
+    const moment = require('moment');
+
+    return Website.findOne().then(function(webinfo){   //网站相关信息查询
+      console.log(webinfo);
+      webinfo.website_title = webinfo.title;
+      webinfo.website_description = webinfo.description;
+      console.log(webinfo.copyright)
+
+      let locals = {
+          'website_title': webinfo.title,
+          'website_description': webinfo.description,
+          'copyright': webinfo.copyright,
+          'email': webinfo.email,
+          'company': webinfo.company,
+      };
+
+
+      locals['articleId'] = articleId;
+
+
+      return Category.findAll().then(function(categories){
+          locals['categories'] = categories;
+
+          return Tag.getAllTags().then(function(tags){
+            locals['tags'] = tags;
+            return Article.findOne({
+                where: {id: articleId},
+                include: {
+                    model: Tag
+                }
+            }).then(function(article){  // 按照条件查询文章
+
+                locals['article'] = article;
+                return locals;
+            });
           });
 
 

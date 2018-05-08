@@ -13,7 +13,7 @@ const _ = require('lodash');
 const display = function(req, res, next) {
     /*
     * get参数： 
-    *  1. cate_id: 分类id
+    *  1. cate_id: 分类id 或 tag_id: 标签id
     *  2. page: 页码
     */
     //分页信息
@@ -51,10 +51,33 @@ const display = function(req, res, next) {
             return res.render('blog', locals);
         })
     }
-
-
     
 }
+
+
+//显示某一文章
+const displayArticle = function(req, res, next) {
+    /*
+    * get参数： 
+    *  1. article_id: 文章id
+    */
+    //分页信息
+    let page = req.query.page ? req.query.page : 1;
+    let limit = 4;
+    let articleId = 0;
+
+
+    if (req.query.article_id) {
+        articleId = req.query.article_id;
+    }
+
+
+    Article.queryArticle(articleId).then(function(locals){
+        console.log(locals);
+        return res.render('article', locals);
+    })
+}
+
 
 //发文章页面的显示
 const postDisplay = function(req, res, next) {
@@ -99,6 +122,7 @@ const post = function(req, res, next) {
 
 module.exports = {
     display:display,
+    displayArticle: displayArticle,
     postDisplay: postDisplay,
     post:post,
 }
